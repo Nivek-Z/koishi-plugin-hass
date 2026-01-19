@@ -11,12 +11,26 @@
   "license": "MIT",
   "scripts": {},
   "keywords": [
-    "chatbot",
+    "homeassistant",
     "koishi",
-    "plugin"
+    "plugin",
+    "hass"
   ],
   "devDependencies": {},
   "peerDependencies": {
     "koishi": "^4.18.7"
-  }
+  },
+
+  "repository": {                           
+    "type": "git",
+    "url": "git+https://github.com/Nivek-Z/koishi-plugin-hass.git"
+  },
+  "homepage": "https://github.com/Nivek-Z/koishi-plugin-hass",
+
+    "koishi": {
+    "description": {                   
+      "en": "Monitor homeassistant entity state changes and support custom trigger commands for querying or pushing",
+      "zh": "监控homeassistant实体状态变化并支持自定义触发命令进行查询或推送"
+    }
+}
 }
