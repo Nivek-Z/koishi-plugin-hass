@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-hass",
   "description": "监控homeassistant实体状态变化并支持自定义触发命令进行查询或推送",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
