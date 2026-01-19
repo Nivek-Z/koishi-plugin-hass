@@ -4,63 +4,60 @@
 
 监控homeassistant实体状态变化并支持自定义触发命令进行查询或推送
 
+## 目录
+- [安装](#安装)
+- [配置](#配置)
+- [占位符](#占位符)
+- [命令](#命令)
+- [平台与通知](#平台与通知)
+- [依赖与注意事项](#依赖与注意事项)
+- [配置项说明](#配置项说明)
+
 ## 安装
 
-```bash
-npm i koishi-plugin-hass
-```
-
-或在 Koishi 控制台的插件市场中安装。
+在 Koishi 控制台的插件市场中安装。
 
 ## 配置
+基础配置
+- ![](imgs/1.png)
 
-最小配置（只用于手动查询）：
+消息回复（messageReplies）支持：
+- `{占位名}`：只替换为该实体的 `state`（状态值）  
+`下面是开启自定义消息回复的示例`
+![](imgs/2.png)
+`配置如下:`
+![](imgs/3.png)
 
-```yaml
-plugins:
-  hass:
-    apiUrl: https://ha.example.org
-    accessToken: your_long_lived_token
-```
 
-启用轮询规则与通知示例：
+规则通知（alertRules）支持：
+- `{name}` 实体名称（friendly_name）
+- `{entity}` 实体 ID
+- `{state}` 当前状态
+- `{prev}` 上一次状态（仅状态变化）
+- `{value}` 比较值  
+示例:
+![](imgs/4.png)
+目前只支持纯数字类型的实体状态的大小比较
 
-```yaml
-plugins:
-  hass:
-    apiUrl: https://ha.example.org
-    accessToken: your_long_lived_token
-    syncOnStart: true
-    pollingEnabled: true
-    pollingIntervalSec: 30
-    notifyChannels:
-      - platform: sandbox
-        channelId: 123456
-    alertRules:
-      - enabled: true
-        entity: sensor.battery_level
-        operator: lt
-        value: 20
-        message: "电池过低：{name} 当前 {state}"
-```
 
-消息触发回复（多实体）示例：
 
-```yaml
-plugins:
-  hass:
-    apiUrl: https://ha.example.org
-    accessToken: your_long_lived_token
-    messageReplies:
-      - enabled: true
-        trigger: 状态
-        entities:
-          - key: 电池
-            entity: sensor.battery_level
-          - key: 屏幕
-            entity: binary_sensor.screen
-        reply: "电池{电池}，屏幕{屏幕}"
-```
+## 命令
+
+- `hass.sync`：同步实体列表（写入缓存并刷新下拉）
+- `hass.schema`：查看实体 schema 同步状态（调试）
+- `hass [entity]`：查询实体状态，未指定时使用 `defaultEntities` 的第一个
+- `以及可配置自定义的触发消息`
+
+## 平台与通知
+
+`notifyChannels` 需要指定平台是因为频道 ID 在不同平台可能重复，且需要知道用哪个 bot 发送。  
+插件会在运行时读取 `ctx.bots`，匹配平台后发送通知。
+
+如果只使用一个平台，也可以只填写该平台的频道 ID 列表。
+
+## 依赖与注意事项
+
+- 必需：`http` 插件（用于请求 Home Assistant API）
 
 ## 配置项说明
 
@@ -87,48 +84,3 @@ plugins:
   - entities: 实体列表（在回复中用 {占位名} 引用）
   - reply: 回复内容模板
 
-## 占位符
-
-规则通知（alertRules）支持：
-- `{name}` 实体名称（friendly_name）
-- `{entity}` 实体 ID
-- `{state}` 当前状态
-- `{prev}` 上一次状态（仅状态变化）
-- `{value}` 比较值
-
-消息回复（messageReplies）支持：
-- `{占位名}`：只替换为该实体的 `state`（状态值）
-- `{name}` `{entity}` `{state}`：仅当有实体时可用（默认取第一个实体）
-
-## 命令
-
-- `hass.sync`：同步实体列表（写入缓存并刷新下拉）
-- `hass.schema`：查看实体 schema 同步状态（调试）
-- `hass [entity]`：查询实体状态，未指定时使用 `defaultEntities` 的第一个
-
-## 平台与通知
-
-`notifyChannels` 需要指定平台是因为频道 ID 在不同平台可能重复，且需要知道用哪个 bot 发送。  
-插件会在运行时读取 `ctx.bots`，匹配平台后发送通知。
-
-如果只使用一个平台，也可以只填写该平台的频道 ID 列表。
-
-## 依赖与注意事项
-
-- 必需：`http` 插件（用于请求 Home Assistant API）
-- 建议：至少启用一个适配器 bot（用于发送通知）
-- 动态实体下拉依赖控制台（console）服务刷新
-
-
-## FAQ
-
-1) 为什么看不到实体列表？
-- 先运行 `hass.sync` 或开启 `syncOnStart`。
-
-2) 为什么通知没有发送？
-- 检查 `pollingEnabled` 与 `pollingIntervalSec`；
-- 确保 `notifyChannels` 填了正确的平台与频道 ID；
-- 检查实体状态是否满足条件。
-
-3) `{占位名}` 显示的是什么？
-- 显示该实体的 `state`（状态值），不是名称。

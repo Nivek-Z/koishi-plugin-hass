@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-hass",
   "description": "监控homeassistant实体状态变化并支持自定义触发命令进行查询或推送",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -9,28 +9,24 @@
     "dist"
   ],
   "license": "MIT",
-  "scripts": {},
   "keywords": [
     "homeassistant",
     "koishi",
     "plugin",
     "hass"
   ],
-  "devDependencies": {},
   "peerDependencies": {
     "koishi": "^4.18.7"
   },
-
-  "repository": {                           
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/Nivek-Z/koishi-plugin-hass.git"
   },
   "homepage": "https://github.com/Nivek-Z/koishi-plugin-hass",
-
-    "koishi": {
-    "description": {                   
+  "koishi": {
+    "description": {
       "en": "Monitor homeassistant entity state changes and support custom trigger commands for querying or pushing",
       "zh": "监控homeassistant实体状态变化并支持自定义触发命令进行查询或推送"
     }
-}
+  }
 }
